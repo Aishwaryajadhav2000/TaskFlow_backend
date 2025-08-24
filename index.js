@@ -3,16 +3,17 @@ import { userRoutes } from "./routes/users.route.js";
 import connectDatabase from "./database/database.js";
 import cors from "cors"
 import { tasksRoute } from "./routes/tasks.route.js";
-
-
+import dotenv from "dotenv";
 
 const app = express();
 app.use(express.json());
 
 connectDatabase()
 
+dotenv.config();
 //Server running on port 8000
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
+
 app.listen(PORT, () => {
     console.log(`server running at ${PORT}`)
 });
