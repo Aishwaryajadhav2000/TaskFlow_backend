@@ -25,6 +25,10 @@ app.use(cors({
     origin : allowedOrigins
 }))
 
+app.get('/' , (req,res)=>{
+    res.send("welcome to root route")
+})
+
 
 //Routes
 // app.use('/api' , userRoutes);
