@@ -11,10 +11,10 @@ const taskModel = new mongoose.Schema({
     taskStatus : {
         type : String
     },
-    owner : {
+    owner : [{
         type: mongoose.Schema.Types.ObjectId,
         ref : "users"
-    }
+    }]
 });
 
 const taskSchema =  mongoose.model("tasks" , taskModel);
