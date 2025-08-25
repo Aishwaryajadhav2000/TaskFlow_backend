@@ -21,11 +21,7 @@ const users = new mongoose.Schema({
     },
     password : {
         type : String
-    },
-    tasks : [{
-        type: mongoose.Schema.Types.ObjectId, 
-        ref : "tasks"
-    }]
+    }
 })
 
 const usersSchema = mongoose.model("users", users);

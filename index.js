@@ -89,7 +89,7 @@ app.use((req,res,next)=>{
 })
 
 app.get('/' , (req,res)=>{
-    res.send("welcome to root route")
+    res.send("welcome to root route 2")
 })
 
 userRoutes(app);
