@@ -21,8 +21,16 @@ const users = new mongoose.Schema({
     },
     password : {
         type : String
-    }
-})
+    },
+    tasks : [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref : "tasks",
+    },]
+});
+
+users.statics.getFullProfile = function(userId){
+    return this.findById(userId).populate("tasks")
+}
 
 const usersSchema = mongoose.model("users", users);
 export default usersSchema;

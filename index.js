@@ -62,43 +62,31 @@ import mongoose from 'mongoose';
 // });
 
 
-
-
-
-
-
-
-
-
-
-mongoose.connect('mongodb+srv://aishwaryaj1608:zKuEIeVxn7H9XmBZ@tasks.pby542d.mongodb.net/')
-.then(()=>{
-    console.log("DB CONNECTED SUCCESSFULLY");
-})
-.catch((err)=>{
-    console.log(err , "err while connecting DB");
-});
-
-
 app.use(cors()) // cors middleware
 app.use(express.json()) //body parsing middleware
 
-app.use((req,res,next)=>{
-    console.log("middleware hu mai");
-    next();
+const PORT = 8000;
+app.listen(PORT, () => {
+    console.log(`SERVER CONNECTED AT PORT: ${PORT}`);
 })
 
-app.get('/' , (req,res)=>{
-    res.send("welcome to root route 2")
+mongoose.connect('mongodb+srv://aishwaryaj1608:zKuEIeVxn7H9XmBZ@tasks.pby542d.mongodb.net/')
+    .then(() => {
+        console.log("DB CONNECTED SUCCESSFULLY");
+    })
+    .catch((err) => {
+        console.log(err, "err while connecting DB");
+    });
+
+
+app.get('/', (req, res) => {
+    res.send("welcome to root route 4")
 })
 
 userRoutes(app);
 tasksRoute(app);
 
-const PORT = 8000;
-app.listen(PORT , ()=>{
-    console.log(`SERVER CONNECTED AT PORT: ${PORT}`);
-})
+
 
 
 
