@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-
-
 const taskModel = new mongoose.Schema({
     description : {
         type : String
@@ -11,12 +9,13 @@ const taskModel = new mongoose.Schema({
     taskStatus : {
         type : String
     },
+    taskImage : {
+        type : String
+    },
     owner : [{
         type: mongoose.Schema.Types.ObjectId,
         ref : "users"
     }]
 });
-
 const taskSchema =  mongoose.model("tasks" , taskModel);
-
 export default taskSchema

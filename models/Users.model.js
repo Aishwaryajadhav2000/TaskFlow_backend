@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const users = new mongoose.Schema({
     companyname: {
         type: String
@@ -27,10 +26,8 @@ const users = new mongoose.Schema({
         ref : "tasks",
     },]
 });
-
 users.statics.getFullProfile = function(userId){
     return this.findById(userId).populate("tasks")
 }
-
 const usersSchema = mongoose.model("users", users);
 export default usersSchema;

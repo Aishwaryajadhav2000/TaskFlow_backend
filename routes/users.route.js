@@ -1,4 +1,4 @@
-import { getCurrentUser, login, register } from "../controllers/users.controller.js";
+import { deleteAccount, getCurrentUser, login, register, updatePassword } from "../controllers/users.controller.js";
 import { protect } from "../middlewares/verifyToken.js";
 
 
@@ -8,6 +8,10 @@ export function userRoutes(app){
 
     app.post('/api/loginuser' , login);
 
-    app.get('/api/getuser' , protect , getCurrentUser)
+    app.get('/api/getuser' , protect , getCurrentUser);
+
+    app.put('/api/updatepass' , protect , updatePassword);
+
+    app.delete('/api/deleteuser' , protect , deleteAccount)
 
 }

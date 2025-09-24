@@ -8,6 +8,8 @@ import cors from 'cors';
 import express from 'express';
 const app = express();
 import mongoose from 'mongoose';
+import { companyRoutes } from "./routes/company.route.js";
+import path from "path";
 
 
 // const app = express();
@@ -64,6 +66,7 @@ import mongoose from 'mongoose';
 
 app.use(cors()) // cors middleware
 app.use(express.json()) //body parsing middleware
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 const PORT = 8000;
 app.listen(PORT, () => {
@@ -85,6 +88,7 @@ app.get('/', (req, res) => {
 
 userRoutes(app);
 tasksRoute(app);
+companyRoutes(app);
 
 
 
