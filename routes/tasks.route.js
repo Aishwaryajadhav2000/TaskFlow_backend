@@ -1,4 +1,4 @@
-import { createTask, deleteTask, findTaskByUser, getTaskById, updateTask } from "../controllers/tasks.controller.js";
+import { createTask, deleteTask, findTaskByCompany, findTaskByUser, getTaskById, updateTask } from "../controllers/tasks.controller.js";
 import { protect } from "../middlewares/verifyToken.js";
 import { upload } from "../upload/upload.js";
 
@@ -12,5 +12,7 @@ export function tasksRoute(app){
     app.delete("/api/deletetask/:id", deleteTask);
 
     app.post("/api/findtaskbyuser" , findTaskByUser);
+
+    app.get('api/gettaskbycompany/:companyname/tasks' , findTaskByCompany)
 
 }

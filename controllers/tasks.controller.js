@@ -151,3 +151,20 @@ export async function findTaskByUser(req, res) {
         return res.status(500).json({ message: err.message })
     }
 }
+
+
+
+//new func : added to find tasks by company name
+export async function findTaskByCompany(req, res) {
+    try {
+        const {companyname} = req.params;
+        const findTask = await Company.findOne({companyname}).populate({path : 'tasks' , model : 'taskSchema'});
+        if(!findTask){
+            return res.status(400).json({message : "Company not found"})
+        }
+        const tasks = await Task.find({ _id: { $in: findTask.tasks } });
+        return res.status(200).json({tasks})
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
