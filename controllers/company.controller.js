@@ -54,6 +54,19 @@ export async function getComapnies(req, res) {
 
     }catch(err){
         return res.status(500).json({ mesaage: err })
+    }   
+}
+
+
+export async function getCompanyDeatils(req , res) {
+
+    try{
+
+        const {companyname} = req.body
+
+
+    }catch(err){
+     return res.status(500).json({ mesaage: err })   
     }
     
 }
