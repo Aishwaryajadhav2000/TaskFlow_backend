@@ -1,4 +1,6 @@
 import Company from "../models/Company.model.js";
+import taskSchema from "../models/Tasks.model.js";
+import usersSchema from "../models/Users.model.js";
 
 
 export async function getUsersByCompanyName(req, res, next) {
@@ -58,15 +60,63 @@ export async function getComapnies(req, res) {
 }
 
 
+//Get company details via company name
 export async function getCompanyDeatils(req , res) {
 
     try{
 
-        const {companyname} = req.body
+        const {companyname} = req.params
+
+        const companyDetails = await Company.findOne({companyname});
+
+        if(!companyDetails){
+            return res.status(404).json({message : `${companyname} Company not found`})
+        }else{
+            return res.status(200).json({details : companyDetails})
+        }
 
 
     }catch(err){
-     return res.status(500).json({ mesaage: err })   
+     return res.status(500).json({ message: "Error occureds" })   
     }
     
+}
+
+
+//Delete Client via companyname 
+//Delete all users present in client company
+//Delete all tasks
+export async function deleteClient(req , res) {
+    try{
+
+        const {companyname} = req.params
+
+        const findClientDetails = await Company.findOne({companyname});
+
+        if(!findClientDetails){
+            return res.status(404).json({message : `${companyname} Company not found`})
+        }else{
+
+            //get userslist from client detailsw and delete
+           const getUsersAndDelete = findClientDetails.users
+           if(getUsersAndDelete.length > 0){
+            await usersSchema.deleteMany({_id : {$in : getUsersAndDelete}})
+           }
+
+           //get tasks from client details and delete
+           const getTasks = findClientDetails.tasks
+           if(getTasks.length > 0){
+            await taskSchema.deleteMany({_id : {$in :getTasks}})
+           }
+
+           //Delete Client company details
+           await Company.findOneAndDelete({companyname})
+
+           return res.status(200).json({message : "Client details and users deleted successfully" , deletedUsers : getUsersAndDelete.length})
+
+        }
+
+    }catch(err){
+        return res.status(500).json({error:err})
+    }
 }

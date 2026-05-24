@@ -3,38 +3,97 @@ import jwt from "jsonwebtoken"
 import Company from "../models/Company.model.js";
 import bcrypt from "bcrypt"
 
+// export async function register(req, res) {
+
+//     try {
+//         const { companyname, fullname, username, phone, gender, position, password } = req.body;
+
+//         let findUser = await usersSchema.findOne({username});
+//         if (findUser) {
+//             return res.status(500).json({ message: "User already exist..." })
+//         } else {
+
+//             const newUser = await usersSchema.create({ companyname, fullname, username, phone, gender, position, password: bcrypt.hashSync(password, 10) });
+
+//             let findcompanyname = await Company.findOne({ companyname });
+
+//             if (findcompanyname) {
+//                 findcompanyname.users.push(newUser._id);
+//                 await findcompanyname.save();
+//             } else {
+//                 findcompanyname = await Company.create({
+//                     companyname,
+//                     users: [newUser._id]
+//                 });
+//             }
+
+//             return res.status(200).json({ message: "user created successfully", user: newUser });
+
+//         }
+
+//     } catch (err) {
+//         return res.status(400).json({ error: err.message })
+//     }
+// }
+
+
 export async function register(req, res) {
 
     try {
         const { companyname, fullname, username, phone, gender, position, password } = req.body;
 
-        let findUser = await usersSchema.findOne({username});
+        // Check if username exists
+        let findUser = await usersSchema.findOne({ username });
         if (findUser) {
             return res.status(500).json({ message: "User already exist..." })
-        } else {
+        }
 
-            const newUser = await usersSchema.create({ companyname, fullname, username, phone, gender, position, password: bcrypt.hashSync(password, 10) });
+        // Step 1: Find company and populate users
+        let findcompanyname = await Company.findOne({ companyname }).populate("users");
 
-            let findcompanyname = await Company.findOne({ companyname });
+        // Step 2: If company exists, check for admin
+        if (findcompanyname) {
 
-            if (findcompanyname) {
-                findcompanyname.users.push(newUser._id);
-                await findcompanyname.save();
-            } else {
-                findcompanyname = await Company.create({
-                    companyname,
-                    users: [newUser._id]
+            const adminExists = findcompanyname.users.some(
+                (u) => u.position?.toLowerCase() === "admin"
+            );
+
+            if (adminExists && position.toLowerCase() === "admin") {
+                return res.status(501).json({
+                    message: "Admin already exists for this company"
                 });
             }
-
-            return res.status(200).json({ message: "user created successfully", user: newUser });
-
         }
+
+        // Step 3: Create user (now newUser is available)
+        const newUser = await usersSchema.create({
+            companyname,
+            fullname,
+            username,
+            phone,
+            gender,
+            position,
+            password: bcrypt.hashSync(password, 10)
+        });
+
+        // Step 4: Attach user to company
+        if (findcompanyname) {
+            findcompanyname.users.push(newUser._id);
+            await findcompanyname.save();
+        } else {
+            await Company.create({
+                companyname,
+                users: [newUser._id]
+            });
+        }
+
+        return res.status(200).json({ message: "user created successfully", user: newUser });
 
     } catch (err) {
         return res.status(400).json({ error: err.message })
     }
 }
+
 
 export async function login(req, res) {
 
@@ -42,7 +101,7 @@ export async function login(req, res) {
 
     usersSchema.findOne({ username }).then((data) => {
         if (!data) {
-            return res.status(400).json({ message: "Username does not exist" })
+            return res.status(404).json({ message: "Username does not exist" })
         }
 
         let validatePassword = bcrypt.compareSync(password, data.password)
@@ -140,11 +199,14 @@ export async function deleteAccount(req, res) {
     try {
         const { companyname } = req.body
         const userId = req.user._id;
+
+        //Delete user
         const data = await usersSchema.findByIdAndDelete(userId)
         if (!data) {
             return res.status(500).json({ message: "User not found" })
         }
 
+        //delete user from company
         const findUserInOrg = await Company.findOne({ companyname });
         if (findUserInOrg) {
             findUserInOrg.users.pull(userId);
@@ -157,6 +219,5 @@ export async function deleteAccount(req, res) {
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }
-
 
 }

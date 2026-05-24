@@ -1,4 +1,4 @@
-import { createCompany, getComapnies, getUsersByCompanyName } from "../controllers/company.controller.js";
+import { createCompany, deleteClient, getComapnies, getCompanyDeatils, getUsersByCompanyName } from "../controllers/company.controller.js";
 
 
 export function companyRoutes(app){
@@ -6,5 +6,10 @@ export function companyRoutes(app){
 
     app.post('/api/createcompany' , createCompany);
 
-    app.get('/api/getcompanies' , getComapnies)
+    app.get('/api/getcompanies' , getComapnies);
+
+    //getCompany details
+    app.get('/api/getcompany/:companyname' , getCompanyDeatils);
+
+    app.delete('/api/deleteclient/:companyname' , deleteClient)
 }

@@ -158,12 +158,14 @@ export async function findTaskByUser(req, res) {
 export async function findTaskByCompany(req, res) {
     try {
         const {companyname} = req.params;
-        const findTask = await Company.findOne({companyname}).populate({path : 'tasks' , model : 'taskSchema'});
+        // const findTask = await Company.findOne({companyname}).populate({path : 'tasks' , model : 'taskSchema'});
+      const findTask = await Company.findOne({companyname}).populate('tasks');
+
         if(!findTask){
             return res.status(400).json({message : "Company not found"})
         }
-        const tasks = await Task.find({ _id: { $in: findTask.tasks } });
-        return res.status(200).json({tasks})
+        // const tasks = await Task.find({ _id: { $in: findTask.tasks } });
+        return res.status(200).json({AllTasks : findTask})
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }

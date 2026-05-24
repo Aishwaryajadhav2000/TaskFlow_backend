@@ -13,6 +13,8 @@ export function tasksRoute(app){
 
     app.post("/api/findtaskbyuser" , findTaskByUser);
 
-    app.get('api/gettaskbycompany/:companyname/tasks' , findTaskByCompany)
+    app.get('/api/gettaskbycompany/:companyname' , findTaskByCompany);
+
+    
 
 }
